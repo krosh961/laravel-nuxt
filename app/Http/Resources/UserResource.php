@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+
 // use Carbon\Carbon;
 
 class UserResource extends JsonResource
@@ -23,13 +24,11 @@ class UserResource extends JsonResource
             $passwordLongTimeNotChange = null;
         }
 
-
         $countryName = \Countries::where('cca3', $this->country)->first()['translations']['rus']['common'];
-
 
         return [
             'id' => $this->id,
-            'password' => !!$this->password, // есть ли пароль
+            'password' => (bool) $this->password, // есть ли пароль
             'passwordLongTimeNotChange' => $passwordLongTimeNotChange,
             'nickname' => $this->nickname,
             'emails' => EmailResource::collection($this->emails), // короткая форма чтобы не писать ()->get()

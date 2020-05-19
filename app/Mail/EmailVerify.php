@@ -5,7 +5,6 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class EmailVerify extends Mailable
 {
@@ -14,6 +13,7 @@ class EmailVerify extends Mailable
     public $emailVerifyUrl;
 
     public $subject = 'Подтверждение почты';
+
     /**
      * Create a new message instance.
      *

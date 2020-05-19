@@ -24,18 +24,18 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'password' => config('validation.password')
+            'password' => config('validation.password'),
         ];
 
         if (request()->email) {
             $rules = array_merge($rules, [
-                'email' => 'required|' . config('validation.email'),
+                'email' => 'required|'.config('validation.email'),
                 // 'password' => 'required|string|min:5'
             ]);
         }
         if (request()->nickname) {
             $rules = array_merge($rules, [
-                'nickname' => 'required|' . config('validation.nickname')
+                'nickname' => 'required|'.config('validation.nickname'),
             ]);
         }
 

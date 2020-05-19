@@ -31,43 +31,42 @@ class SocialiteProvidersTableSeeder extends Seeder
             return;
         }
 
-
         App\SocialiteProvider::insert([
             [
                 'name' => 'google',
                 'name_for_human' => 'Google+',
                 'icon' => 'google-plus',
                 'color' => '#F44336',
-                'text_color' => null
+                'text_color' => null,
             ],
             [
                 'name' => 'facebook',
                 'name_for_human' => 'Facebook',
                 'icon' => 'facebook',
                 'color' => '#3F51B5',
-                'text_color' => null
+                'text_color' => null,
             ],
             [
                 'name' => 'vkontakte',
                 'name_for_human' => 'Вконтакте',
                 'icon' => 'vk',
                 'color' => '#1976D2',
-                'text_color' => '#1976D2'
+                'text_color' => '#1976D2',
             ],
             [
                 'name' => 'instagram',
                 'name_for_human' => 'Instagram',
                 'icon' => 'instagram',
                 'color' => '#2196F3',
-                'text_color' => null
+                'text_color' => null,
             ],
             [
                 'name' => 'reddit',
                 'name_for_human' => 'Reddit',
                 'icon' => 'reddit',
                 'color' => '#E64A19',
-                'text_color' => '#E64A19'
-            ]
+                'text_color' => '#E64A19',
+            ],
         ]);
     }
 }

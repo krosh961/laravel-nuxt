@@ -24,7 +24,7 @@ class GetUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'nickname' => 'required|' . config('validation.nickname')
+            'nickname' => 'required|'.config('validation.nickname'),
         ];
     }
 }

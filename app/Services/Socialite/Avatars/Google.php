@@ -2,13 +2,12 @@
 
 namespace App\Services\Socialite\Avatars;
 
-use GuzzleHttp\Client;
 use App\Contracts\Socialite\Avatar;
 
 class Google extends Avatar
 {
     /**
-     * Дает ссылку на аватар из данных запроса
+     * Дает ссылку на аватар из данных запроса.
      */
     protected function getAvatarFromData($data)
     {
@@ -16,20 +15,22 @@ class Google extends Avatar
     }
 
     /**
-     * Параметры запроса
+     * Параметры запроса.
      */
-    protected function getConfig() {
+    protected function getConfig()
+    {
         return [
             'headers' => [
-                'Authorization' => 'Bearer ' . $this->userSocialite->token,
-            ]
+                'Authorization' => 'Bearer '.$this->userSocialite->token,
+            ],
         ];
     }
 
     /**
-     * Адрес API
+     * Адрес API.
      */
-    protected function getUrl() {
+    protected function getUrl()
+    {
         return 'https://www.googleapis.com/plus/v1/people/me';
     }
 }

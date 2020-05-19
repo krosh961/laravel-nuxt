@@ -2,9 +2,8 @@
 
 namespace App;
 
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model as Eloquent;
 use App\Traits\BaseModelTimezones;
+use Illuminate\Database\Eloquent\Model as Eloquent;
 
 class BaseModel extends Eloquent
 {

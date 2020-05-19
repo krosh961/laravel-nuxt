@@ -35,23 +35,22 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
-
     'vkontakte' => [
         'client_id' => env('VKONTAKTE_KEY'),
         'client_secret' => env('VKONTAKTE_SECRET'),
-        'redirect' => env('APP_CLIENT_URL') . env('VKONTAKTE_REDIRECT_URI'),
+        'redirect' => env('APP_CLIENT_URL').env('VKONTAKTE_REDIRECT_URI'),
     ],
     // ??? почему-то когда удаляю тут именно фейсбук, то он не работает.
     'facebook' => [
         'client_id' => env('FACEBOOK_KEY'),
         'client_secret' => env('FACEBOOK_SECRET'),
-        'redirect' => env('APP_CLIENT_URL') . env('FACEBOOK_REDIRECT_URI'),
+        'redirect' => env('APP_CLIENT_URL').env('FACEBOOK_REDIRECT_URI'),
     ],
 
     'google' => [
         'client_id' => env('GOOGLE_KEY'),
         'client_secret' => env('GOOGLE_SECRET'),
-        'redirect' => env('APP_CLIENT_URL') . env('GOOGLE_REDIRECT_URI'),
+        'redirect' => env('APP_CLIENT_URL').env('GOOGLE_REDIRECT_URI'),
     ],
 
     // 'twitter' => [
@@ -63,12 +62,12 @@ return [
     'instagram' => [
         'client_id' => env('INSTAGRAM_KEY'),
         'client_secret' => env('INSTAGRAM_SECRET'),
-        'redirect' => env('APP_CLIENT_URL') . env('INSTAGRAM_REDIRECT_URI')
+        'redirect' => env('APP_CLIENT_URL').env('INSTAGRAM_REDIRECT_URI'),
     ],
 
     'reddit' => [
         'client_id' => env('REDDIT_KEY'),
         'client_secret' => env('REDDIT_SECRET'),
-        'redirect' => env('APP_CLIENT_URL') . env('REDDIT_REDIRECT_URI')
+        'redirect' => env('APP_CLIENT_URL').env('REDDIT_REDIRECT_URI'),
     ],
 ];

@@ -25,7 +25,7 @@ class SaveAvatarRequest extends FormRequest
     {
         return [
             'file' => 'image',
-            'cropInfo' => 'json'
+            'cropInfo' => 'json',
         ];
     }
 }

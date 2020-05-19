@@ -10,19 +10,19 @@ class Email extends BaseModel
      * @var array
      */
     protected $fillable = [
-        'email', 'label', 'verified', 'public', 'verification_token'
+        'email', 'label', 'verified', 'public', 'verification_token',
     ];
 
     /**
-     * Почта по почте
+     * Почта по почте.
      */
     public function scopeOfEmail($query, $email)
     {
         return $query->where('email', $email);
     }
 
-
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 }

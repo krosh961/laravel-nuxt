@@ -2,12 +2,13 @@
 
 namespace App\Traits;
 
-use App\SocialiteProvider;
-use App\User;
 use App\Email;
 use App\Http\Resources\UserResource;
-use App\Traits\Avatar; // можно и просто use Avatar;
+use App\SocialiteProvider;
+use App\User;
+// можно и просто use Avatar;
 use Image;
+
 // use App\Traits\EmailVerification;
 
 trait Socialite
@@ -15,7 +16,8 @@ trait Socialite
     // use EmailVerification;
     use Avatar;
 
-    public function userSaveSocAcc($user, $userSoc, $providerName) {
+    public function userSaveSocAcc($user, $userSoc, $providerName)
+    {
         $provider = SocialiteProvider::where('name', $providerName)->first();
 
         // ищет юзера по uid
@@ -33,7 +35,7 @@ trait Socialite
             // поиск почты совпадающей с почтой соц сети
             if ($emailSameAsSocEmail = Email::where('email', $userSoc['email'])->first()) {
                 // если владелец почты совпадает с текущим и если не подтвержденна, то делает ее подтвержденной
-                if ($emailSameAsSocEmail->user()->first()->id === $user->id && !$emailSameAsSocEmail->verified) {
+                if ($emailSameAsSocEmail->user()->first()->id === $user->id && ! $emailSameAsSocEmail->verified) {
                     $emailSameAsSocEmail->verified = true;
                     $emailSameAsSocEmail->save();
                 }
@@ -43,7 +45,7 @@ trait Socialite
                     'email' => $userSoc['email'],
                     'label' => "Эл. адрес взятый из $provider->name_for_human.",
                     'verified' => true,
-                    'public' => false
+                    'public' => false,
                 ]);
 
                 $user->saveEmail($emailFromSocAcc);
@@ -69,28 +71,27 @@ trait Socialite
         //     $user->email_verified = false;
         // }
 
-
         // ставит аватарку
-        if (!$user->avatar && $userSoc['avatar']) {
+        if (! $user->avatar && $userSoc['avatar']) {
             $img = Image::make($userSoc['avatar']);
             $this->setUserAvatar($user, $img);
         }
         // $user->avatar = $user->avatar ?? $userSoc['avatar'];
-        $user->first_name = $user->first_name ?? $userSoc['firstName'] ?? NULL;
-        $user->last_name = $user->last_name ?? $userSoc['lastName'] ?? NULL;
+        $user->first_name = $user->first_name ?? $userSoc['firstName'] ?? null;
+        $user->last_name = $user->last_name ?? $userSoc['lastName'] ?? null;
         // $user->activated = true;
         $user->save();
-
 
         $user->socAccounts()->save($provider, [
             'uid' => $userSoc['uid'],
             'token' => $userSoc['token'],
             'expiresIn' => $userSoc['expiresIn'],
-            'refreshToken' => $userSoc['refreshToken']
+            'refreshToken' => $userSoc['refreshToken'],
         ]);
     }
 
-    public function getUserSocResponse($userSoc, $providerName) {
+    public function getUserSocResponse($userSoc, $providerName)
+    {
         $userSocResponse = [
             'user' => [
                 'uid' => $userSoc->getId(),
@@ -100,8 +101,8 @@ trait Socialite
                 // token
                 'token' => $userSoc->token,
                 'refreshToken' => $userSoc->refreshToken,
-                'expiresIn' => $userSoc->expiresIn
-            ]
+                'expiresIn' => $userSoc->expiresIn,
+            ],
         ];
         if ($name = $userSoc->getName()) {
             [$firstName, $lastName] = explode(' ', $name);
@@ -114,7 +115,7 @@ trait Socialite
     }
 
     /**
-     * Возможно этот акк соц сети уже привязан к кому-то(попытка найти по uid)
+     * Возможно этот акк соц сети уже привязан к кому-то(попытка найти по uid).
      */
     public function userBySocAccountUid($uid)
     {
@@ -126,20 +127,21 @@ trait Socialite
     }
 
     /**
-     * Возвращает данные для входа
+     * Возвращает данные для входа.
      */
-     public function getDoAuthResponse($userForAuth, $providerName) {
-         // через какой соц акк пользователь вошел последний раз
-         $userForAuth->signin_through_soc_acc = SocialiteProvider::where('name', $providerName)->first()->id;
-         $userForAuth->save();
-         // Инфо о токене в виде массива
-         $tokenInfoArr = $this->getBearerTokenByUser($userForAuth, false);
+    public function getDoAuthResponse($userForAuth, $providerName)
+    {
+        // через какой соц акк пользователь вошел последний раз
+        $userForAuth->signin_through_soc_acc = SocialiteProvider::where('name', $providerName)->first()->id;
+        $userForAuth->save();
+        // Инфо о токене в виде массива
+        $tokenInfoArr = $this->getBearerTokenByUser($userForAuth, false);
 
-         return ['doAuth' => array_merge(
+        return ['doAuth' => array_merge(
              $tokenInfoArr,
              ['user' => new UserResource($userForAuth)]
          )];
-     }
+    }
 
     /**
      * Возможно аватар
@@ -153,7 +155,7 @@ trait Socialite
             // встроенное получение
             $avatar = $userSoc->getAvatar();
         } else {
-            $avatarClass = '\App\Services\Socialite\Avatars\\' . ucfirst($providerName);
+            $avatarClass = '\App\Services\Socialite\Avatars\\'.ucfirst($providerName);
             $avatar = (new $avatarClass($userSoc))->get();
         }
 

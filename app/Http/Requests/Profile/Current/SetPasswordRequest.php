@@ -25,12 +25,12 @@ class SetPasswordRequest extends FormRequest
     {
         if (request()->password) {
             $rules = [
-                'password' => config('validation.password')
+                'password' => config('validation.password'),
             ];
         } else {
             $rules = [
                 'currentPassword' => config('validation.password'),
-                'newPassword' => config('validation.password')
+                'newPassword' => config('validation.password'),
             ];
         }
 

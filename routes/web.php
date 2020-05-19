@@ -23,7 +23,6 @@ if (config('app.client_mode') === 'spa') {
         '\\'.Pallares\LaravelNuxt\Controllers\NuxtController::class
     )->where('uri', '.*');
 
-
     // Working dev and production variant:
 
 //     if (App::environment('local')) {
@@ -48,13 +47,6 @@ if (config('app.client_mode') === 'spa') {
 //     }
 }
 
-
-
-
-
-
-
-
 // Route::get('{uri}', function () {
 //     $source = App::environment('local') ? 'http://localhost:8000/__laravel_nuxt__' : storage_path('app/nuxt/index.html');
 //
@@ -64,9 +56,6 @@ if (config('app.client_mode') === 'spa') {
 // Route::get('{path}', function () {
 //     return file_get_contents(public_path('_nuxt/index.html'));
 // })->where('path', '(.*)');
-
-
-
 
 // Route::get('/c', function ($name = 'app') {
 //     return config('services.vkontakte.redirect');
@@ -84,16 +73,6 @@ if (config('app.client_mode') === 'spa') {
 //     // return new App\Mail\ForgotPassword(123);
 // });
 
-
-
-
-
-
-
-
-
-
-
 //
 // Route::get('{path}', function () {
 //     return file_get_contents(public_path('_nuxt/index.html'));
@@ -104,7 +83,6 @@ if (config('app.client_mode') === 'spa') {
 //
 //     return $uri;
 // })->where('uri', '.*');
-
 
 // Route::get('/', function () use ($index) {
 //     return file_get_contents($index);

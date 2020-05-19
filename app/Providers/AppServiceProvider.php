@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Http\Resources\Json\Resource;
 use Carbon\Carbon;
+use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Support\ServiceProvider;
+
 // use Validator;
 
 class AppServiceProvider extends ServiceProvider

@@ -17,5 +17,5 @@ return [
     'password' => 'required|string|min:5',
     'reset_password_token' => 'required',
     'first_name' => 'alpha|min:3|max:10',
-    'last_name' => 'alpha|min:3|max:15'
+    'last_name' => 'alpha|min:3|max:15',
 ];

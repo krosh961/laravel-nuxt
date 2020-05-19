@@ -5,7 +5,6 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class ForgotPassword extends Mailable
 {
@@ -14,11 +13,11 @@ class ForgotPassword extends Mailable
     public $resetUrlWithToken;
 
     public $subject = 'Сброс пароля';
+
     /**
      * Create a new message instance.
      *
      * @param $resetUrlWithToken
-     *
      */
     public function __construct($resetUrlWithToken)
     {

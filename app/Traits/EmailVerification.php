@@ -2,15 +2,15 @@
 
 namespace App\Traits;
 
-use Illuminate\Support\Facades\Mail;
 use App\Mail\EmailVerify;
+use Illuminate\Support\Facades\Mail;
 
 trait EmailVerification
 {
     /**
-     * Создает токен подтверждения почты и сообщение на почту
+     * Создает токен подтверждения почты и сообщение на почту.
      */
-    protected function createVerificationTokenAndMail($email, $oldToken = false) : string
+    protected function createVerificationTokenAndMail($email, $oldToken = false): string
     {
         $token = ($oldToken && $email->verification_token) ?
             $email->verification_token
@@ -21,11 +21,11 @@ trait EmailVerification
         return tap(
             $token,
             function ($token) use ($email) {
-                $resetUrlWithToken = config('app.client_url') . '/auth/verify-email?token=' . $token;
+                $resetUrlWithToken = config('app.client_url').'/auth/verify-email?token='.$token;
                 $afterSignup = auth()->guest();
 
                 Mail::to([
-                    'email' => $email->email
+                    'email' => $email->email,
                 ])->send(new EmailVerify($resetUrlWithToken, $afterSignup));
             });
     }
