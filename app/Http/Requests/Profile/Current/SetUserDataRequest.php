@@ -25,21 +25,19 @@ class SetUserDataRequest extends FormRequest
     {
         $rules = [
             'birthday' => 'nullable|date',
-            'timezone' =>  'nullable|timezone'
+            'timezone' =>  'nullable|timezone',
         ];
 
         // TODO!!!!!!!!!!!!!!!!!!!
         // требовать ввода обоих полей если одно из них введено
         if (request()->firstName || request()->lastName) {
-            $rules['firstName'] = 'required|' . config('validation.first_name');
-            $rules['lastName'] = 'required|' . config('validation.last_name');
+            $rules['firstName'] = 'required|'.config('validation.first_name');
+            $rules['lastName'] = 'required|'.config('validation.last_name');
         }
 
         // if (request()->email) {
         //     $rules['email'] = config('validation.email');
         // }
-
-
 
         return $rules;
     }

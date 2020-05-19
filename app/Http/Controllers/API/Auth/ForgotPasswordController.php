@@ -1,14 +1,14 @@
 <?php
+
 namespace App\Http\Controllers\API\Auth;
 
-use App\Http\Controllers\API\BaseController;
-use App\User;
 use App\Email;
-use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
-use Illuminate\Http\Request;
-use App\Mail\ForgotPassword;
-use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\API\BaseController;
 use App\Http\Requests\Auth\ForgotPasswordEmailRequest;
+use App\Mail\ForgotPassword;
+use App\User;
+use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use Illuminate\Support\Facades\Mail;
 
 class ForgotPasswordController extends BaseController
 {
@@ -41,15 +41,17 @@ class ForgotPasswordController extends BaseController
             // })->first();
             $email = Email::ofEmail($credentials['email'])->first();
             $user = $email->user()->first(); // ->first()
-        } else if (isset($credentials['nickname'])) {
+        } elseif (isset($credentials['nickname'])) {
             $user = User::where('nickname', $credentials['nickname'])->first();
             // TODO правильнее конечно возможно было сделать выбор между публичными адресами и главным, но пока так
-            if ($user) { $email = $user->mainEmail; }
+            if ($user) {
+                $email = $user->mainEmail;
+            }
         }
 
-
-        if (!$user) {
+        if (! $user) {
             $input = isset($credentials['email']) ? 'почте' : 'нику';
+
             return $this->sendError(trans('passwords.user', ['input' => $input]), 404);
         }
         $emailForMail = $email->email;
@@ -59,9 +61,9 @@ class ForgotPasswordController extends BaseController
         $resetUrlWithToken = "$resetUrl/$token/{$emailForMail}";
 
         Mail::to([
-            'email' => $user->emails()->ofEmail($emailForMail)->first()
+            'email' => $user->emails()->ofEmail($emailForMail)->first(),
         ])->send(new ForgotPassword($resetUrlWithToken));
 
-        return $this->sendResponse(NULL, trans('passwords.sent'));
+        return $this->sendResponse(null, trans('passwords.sent'));
     }
 }

@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\API\Auth;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController;
-use Socialite;
+use App\Http\Resources\UserResource;
+use App\Traits\EmailVerification;
 use App\Traits\PassportToken;
 use App\Traits\Socialite as SocialiteTrait;
 use App\User;
 // use Laravel\Socialite\Facades\Socialite;
-use App\Traits\EmailVerification;
-use App\SocialiteProvider;
-use App\Http\Resources\UserResource;
+use Illuminate\Http\Request;
+use Socialite;
 
 class SocialiteController extends BaseController
 {
@@ -23,11 +22,11 @@ class SocialiteController extends BaseController
         'facebook' => ['email'],
         'vkontakte' => ['email'],
         'instagram' => [],
-        'reddit' => []
+        'reddit' => [],
     ];
 
     /**
-     * Дает ссылку для редиректа на соц сеть
+     * Дает ссылку для редиректа на соц сеть.
      */
     public function getRedirectUrl(Request $request)
     {
@@ -43,7 +42,7 @@ class SocialiteController extends BaseController
     }
 
     /**
-     * Прикрепление соц акка
+     * Прикрепление соц акка.
      *
      * @return Response
      */
@@ -66,7 +65,7 @@ class SocialiteController extends BaseController
     }
 
     /**
-     * Открепление соц акка
+     * Открепление соц акка.
      *
      * @return Response
      */
@@ -76,7 +75,7 @@ class SocialiteController extends BaseController
         // если выбрал вход без пароля и почты/ника и если остается последняя возможность входа - через соц акк,
         // которй сейчас юзер пытается открепить также тут created_through_soc_acc будет истиной
         if ($user->socAccounts()->count() === 1) {
-            if (!$user->password) {
+            if (! $user->password) {
                 return $this->sendError('Это последний прикрепленный Вами аккаунт, чтобы открепить добавьте альтернативную возможность входа в настройках - через пароль.', 422);
             }
         }
@@ -85,10 +84,9 @@ class SocialiteController extends BaseController
         return new UserResource($user);
     }
 
-
     /**
      * Возвращает пользователя после редиректа с страницы соц сети(до этого был редирект на саму страницу соц сети)
-     * Используется code в query параметрах
+     * Используется code в query параметрах.
      */
     public function getUserSocialite(Request $request)
     {
@@ -103,7 +101,7 @@ class SocialiteController extends BaseController
             $responseBodyAsString = $response->getBody()->getContents();
             $errors = [
                 401 => 'Код истек или указан не верно. Попробуйте еще раз.',
-                400 => 'Код авторизации уже был использован. Попробуйте еще раз.'
+                400 => 'Код авторизации уже был использован. Попробуйте еще раз.',
             ];
 
             return $this->sendError($errors[$responseStatus] ?? $responseBodyAsString, $responseStatus);
@@ -112,12 +110,12 @@ class SocialiteController extends BaseController
         $userSocResponse = $this->getUserSocResponse($userSoc, $providerName);
 
         // если гость, то попытка входа
-        if (!$request->loggedIn) {
+        if (! $request->loggedIn) {
             // возможно этот акк соц сети уже привязан к кому-то(попытка найти привязки по данным из соц сети)
             $userForAuth = $this->userBySocAccountUid($userSocResponse['user']['uid']);
 
             // если не нашло по uid
-            if (!$userForAuth && $userSocResponse['user']['email']) {
+            if (! $userForAuth && $userSocResponse['user']['email']) {
                 // поиск по почте
                 if ($userForAuth = User::whereHas('emails', function ($query) use ($userSocResponse) {
                     $query->where('email', $userSocResponse['user']['email']);

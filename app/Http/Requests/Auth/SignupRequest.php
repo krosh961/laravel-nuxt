@@ -25,13 +25,13 @@ class SignupRequest extends FormRequest
     {
         logger(request());
         $rules = [
-            'form.nickname' => 'required|unique:users,nickname|' . config('validation.nickname'),
+            'form.nickname' => 'required|unique:users,nickname|'.config('validation.nickname'),
         ];
 
-        if (!request()->userSoc) {
+        if (! request()->userSoc) {
             $rules = array_merge($rules, [
-                'form.email' => 'required|unique:emails,email|' . config('validation.email'),
-                'form.password' => config('validation.password')
+                'form.email' => 'required|unique:emails,email|'.config('validation.email'),
+                'form.password' => config('validation.password'),
             ]);
         }
 

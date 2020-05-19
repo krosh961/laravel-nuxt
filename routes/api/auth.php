@@ -3,7 +3,7 @@
 Route::group(['namespace' => 'Auth', 'prefix' => 'auth'], function () {
     // для входа по id пользователя
     // if (config('app.env') === 'local') {
-        Route::post('login-by-id', 'AuthController@devAuthInfoByUser');
+    Route::post('login-by-id', 'AuthController@devAuthInfoByUser');
     // }
 
     Route::prefix('soc')->group(function () {

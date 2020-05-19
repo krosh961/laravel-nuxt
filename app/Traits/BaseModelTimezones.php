@@ -5,7 +5,7 @@ namespace App\Traits;
 trait BaseModelTimezones
 {
     /**
-     * Display timestamps in user's timezone
+     * Display timestamps in user's timezone.
      *
      * @param  mixed  $value
      * @return \Illuminate\Support\Carbon
@@ -35,6 +35,7 @@ trait BaseModelTimezones
         if ($value) {
             return $this->asDateTime($value)->setTimeZone(config('app.timezone'))->format($this->getDateFormat());
         }
+
         return $value;
     }
 }

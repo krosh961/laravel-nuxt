@@ -21,7 +21,7 @@ abstract class Avatar
     }
 
     /**
-     * Возвращает результат запроса к API с указаными параметрами
+     * Возвращает результат запроса к API с указаными параметрами.
      */
     protected function request()
     {
@@ -35,20 +35,20 @@ abstract class Avatar
     }
 
     /**
-     * Параметры запроса
+     * Параметры запроса.
      */
-    protected function getConfig() {
+    protected function getConfig()
+    {
         return [];
     }
 
     /**
-     * Адрес API
+     * Адрес API.
      */
     abstract protected function getUrl();
 
     /**
-     * Дает ссылку на аватар из данных запроса
+     * Дает ссылку на аватар из данных запроса.
      */
     abstract protected function getAvatarFromData($data);
-
 }

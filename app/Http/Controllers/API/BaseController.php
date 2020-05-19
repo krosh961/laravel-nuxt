@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller as Controller;
 use App\Transformers\Json;
 
@@ -13,7 +12,7 @@ class BaseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function sendResponse($data  = NULL, $message = NULL, $code = 200)
+    public function sendResponse($data = null, $message = null, $code = 200)
     {
         // $response = [
         //     'success' => true
@@ -31,7 +30,6 @@ class BaseController extends Controller
         return response()->json($response, $code);
     }
 
-
     /**
      * return error response.
      *
@@ -41,14 +39,14 @@ class BaseController extends Controller
     {
         $response = [
             // 'success' => false,
-            'message' => $error
+            'message' => $error,
         ];
 
-      // if(!empty($errorMessages)){
-      //   $response['data'] = $errorMessages;
-      // }
-      // $response = Json::response($data, $message)
+        // if(!empty($errorMessages)){
+        //   $response['data'] = $errorMessages;
+        // }
+        // $response = Json::response($data, $message)
 
-      return response()->json($response, $code);
+        return response()->json($response, $code);
     }
 }

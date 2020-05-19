@@ -54,13 +54,13 @@ class AuthIfToken
     protected function authenticate()
     {
         // if (empty($guards)) {
-            return $this->auth->authenticate('api');
+        return $this->auth->authenticate('api');
         // }
 
         // foreach ($guards as $guard) {
-            if ($this->auth->guard('api')->check()) {
-                return $this->auth->shouldUse('api');
-            }
+        if ($this->auth->guard('api')->check()) {
+            return $this->auth->shouldUse('api');
+        }
         // }
 
         // throw new AuthenticationException('Unauthenticated.', $guards);

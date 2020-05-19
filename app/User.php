@@ -2,11 +2,9 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
-use Carbon\Carbon;
-use App\Http\Resources\EmailResource;
-use App\Http\Resources\PhoneResource;
 
 class User extends AuthenticatableForUser
 {
@@ -22,7 +20,7 @@ class User extends AuthenticatableForUser
     protected $fillable = [
         'nickname', 'email', 'password', 'first_name', 'last_name', 'avatar',
         'created_through_soc_acc', 'gender', 'birthday', 'main_email_id', 'main_phone_id', 'timezone',
-        'country'
+        'country',
     ];
 
     /**
@@ -31,7 +29,7 @@ class User extends AuthenticatableForUser
      * @var array
      */
     protected $hidden = [
-        'password' // , 'remember_token',
+        'password', // , 'remember_token',
     ];
 
     /**
@@ -44,115 +42,123 @@ class User extends AuthenticatableForUser
     ];
 
     /**
-    * The attributes that should be mutated to dates.
-    */
-   protected $dates = [
-       'created_at',
-       'updated_at',
-       'birthday'
-   ];
+     * The attributes that should be mutated to dates.
+     */
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'birthday',
+    ];
 
     /**
-     * Какие Accessors при сериализации должны быть выданы
+     * Какие Accessors при сериализации должны быть выданы.
      */
     protected $appends = ['activated', 'full_name', 'main_email', 'main_phone'];
 
-
-
     /**
-     * Accessor который определяет активирован ли пользователь
+     * Accessor который определяет активирован ли пользователь.
      */
-    function getActivatedAttribute() {
+    public function getActivatedAttribute()
+    {
         // если есть подтвержденная почта или прикрепленный соц акканут
         return $this->emails()->where('verified', true)->exists() ||
             $this->socAccounts()->exists();
     }
+
     /**
-     * Accessor для полного имени
+     * Accessor для полного имени.
      */
-    function getFullNameAttribute() {
+    public function getFullNameAttribute()
+    {
         return $this->first_name && $this->last_name ? "$this->first_name  $this->last_name" : null;
     }
+
     /**
-     * Accessor для главной почты
+     * Accessor для главной почты.
      */
-    function getMainEmailAttribute() {
+    public function getMainEmailAttribute()
+    {
         return $this->emails()->find($this->main_email_id);
     }
+
     /**
-     * Accessor для главного телефона
+     * Accessor для главного телефона.
      */
-    function getMainPhoneAttribute() {
+    public function getMainPhoneAttribute()
+    {
         return $this->phones()->find($this->main_phone_id);
     }
+
     /**
      * Accessor для возраста.
      */
     public function getAgeAttribute()
     {
-        if (!$this->birthday) {
-            return null;
+        if (! $this->birthday) {
+            return;
         }
+
         return Carbon::parse($this->birthday)->age;
     }
 
-
-
     /**
-     * Мутация для главной почты
+     * Мутация для главной почты.
      */
-    function setMainEmailAttribute($email) {
+    public function setMainEmailAttribute($email)
+    {
         $this->attributes['main_email_id'] = $email ? $email->id : null;
     }
+
     /**
-     * Мутация для главного телефона
+     * Мутация для главного телефона.
      */
-    function setMainPhoneAttribute($phone) {
+    public function setMainPhoneAttribute($phone)
+    {
         $this->attributes['main_phone_id'] = $phone ? $phone->id : null;
     }
-
-
 
     /**
      * Сохраняет почту и если не было главной то делает
      */
-    function saveEmail($email) {
+    public function saveEmail($email)
+    {
         $this->emails()->save($email);
 
         // ставит если нет главного
-        if (!$this->main_email_id) {
+        if (! $this->main_email_id) {
             $this->mainEmail = $email;
             $this->save();
         }
     }
+
     /**
      * Сохраняет телефон, первый сохраненный будет главным
      */
-    function savePhone($phone) {
+    public function savePhone($phone)
+    {
         $this->phones()->save($phone);
         // ставит если нет главного
-        if (!$this->main_phone_id) {
+        if (! $this->main_phone_id) {
             $this->mainPhone = $phone;
             $this->save();
         }
     }
 
     /**
-     *Удаляет телефон, меняет главный телефон если надо
+     *Удаляет телефон, меняет главный телефон если надо.
      */
-    function deletePhone($id) {
+    public function deletePhone($id)
+    {
         Phone::destroy($id);
 
-        if (!$this->mainPhone && $this->phones()->exists()) { // $this->mainPhone &&
+        if (! $this->mainPhone && $this->phones()->exists()) { // $this->mainPhone &&
             $this->mainPhone = $this->phones()->first();
             $this->save();
         }
     }
 
-
-
     /**
-     * Получить социальные аккаунты
+     * Получить социальные аккаунты.
      */
     public function socAccounts()
     {
@@ -163,7 +169,7 @@ class User extends AuthenticatableForUser
     }
 
     /**
-     * Почтовы еадреса
+     * Почтовы еадреса.
      */
     public function emails()
     {
@@ -171,7 +177,7 @@ class User extends AuthenticatableForUser
     }
 
     /**
-     * Почтовы еадреса
+     * Почтовы еадреса.
      */
     public function phones()
     {
@@ -179,18 +185,15 @@ class User extends AuthenticatableForUser
     }
 
     /**
-     * История изменений пароля
+     * История изменений пароля.
      */
     public function passwordsHistory()
     {
         return $this->hasMany(UserPasswordHistroy::class);
     }
 
-
-
-
     /**
-     * Пользователь по нику
+     * Пользователь по нику.
      */
     public function scopeOfNickname($query, $nickname)
     {
@@ -198,7 +201,7 @@ class User extends AuthenticatableForUser
     }
 
     /**
-     * Пользователь по почте
+     * Пользователь по почте.
      */
     public function scopeOfEmail($query, $email)
     {
@@ -206,10 +209,6 @@ class User extends AuthenticatableForUser
             $relationQuery->where('email', $email);
         })->get();
     }
-
-
-
-
 
     /**
      * Это перезапись Illuminate/Auth/Passwords/CanResetPassword.php
@@ -219,8 +218,9 @@ class User extends AuthenticatableForUser
      */
     public function getEmailForPasswordReset()
     {
-        return $this->emailForResetPassword;// $this->mainEmail;
+        return $this->emailForResetPassword; // $this->mainEmail;
     }
+
     public function setEmailForResetPassword($value)
     {
         $this->emailForResetPassword = $value;

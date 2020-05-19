@@ -28,9 +28,9 @@ class SavePhoneRequest extends FormRequest
             'country2' => 'required_with:number',
             // еще передается просто country
             // 'number' => 'required|unique:phones,number', // TODO . config('validation.phone'),
-            'label' => 'nullable|' . config('validation.phoneLabel'),
+            'label' => 'nullable|'.config('validation.phoneLabel'),
             'public' => 'required|boolean',
-            'prefix' => 'required'
-        ];;
+            'prefix' => 'required',
+        ];
     }
 }

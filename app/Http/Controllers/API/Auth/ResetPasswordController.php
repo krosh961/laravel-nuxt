@@ -1,16 +1,17 @@
 <?php
+
 namespace App\Http\Controllers\API\Auth;
 
 use App\Http\Controllers\API\BaseController;
-use Illuminate\Foundation\Auth\ResetsPasswords;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Events\PasswordReset;
 use App\Http\Requests\Auth\ForgotPasswordResetRequest;
 use App\User;
-use UnexpectedValueException;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Foundation\Auth\ResetsPasswords;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use UnexpectedValueException;
 
 class ResetPasswordController extends BaseController
 {
@@ -29,38 +30,37 @@ class ResetPasswordController extends BaseController
      * Constant representing a successfully sent reminder.
      *
      * @var string
-    */
+     */
     const RESET_LINK_SENT = 'passwords.sent';
     /**
      * Constant representing a successfully reset password.
      *
      * @var string
-    */
+     */
     const PASSWORD_RESET = 'passwords.reset';
     /**
      * Constant representing the user not found response.
      *
      * @var string
-    */
+     */
     const INVALID_USER = 'passwords.user';
     /**
      * Constant representing an invalid password.
      *
      * @var string
-    */
+     */
     const INVALID_PASSWORD = 'passwords.password';
     /**
      * Constant representing an invalid token.
      *
      * @var string
-    */
+     */
     const INVALID_TOKEN = 'passwords.token';
-
 
     use ResetsPasswords;
 
-
     // TODO авторизация после сброса пароля
+
     /**
      * Reset the given user's password.
      *
@@ -92,8 +92,7 @@ class ResetPasswordController extends BaseController
         $this->resetPassword($user, $credentials['password']);
         $this->broker()->getRepository()->delete($user);
 
-
-        return $this->sendResponse(NULL, trans('passwords.reset'));
+        return $this->sendResponse(null, trans('passwords.reset'));
 
         // Что делает reset: https://github.com/laravel/framework/blob/5.5/src/Illuminate/Auth/Passwords/PasswordBroker.php#L83
         // Передает $credentials для валидации, работы с токеном, возвращает ответ в виде константы класса Illuminate\Contracts\Auth\PasswordBroker
@@ -101,7 +100,6 @@ class ResetPasswordController extends BaseController
         //     // если все правильно то выполнится этот колбэк
         //     $this->resetPassword($user, $password);
         // });
-
 
         // switch ($response) {
         //     case Password::PASSWORD_RESET:
@@ -114,7 +112,6 @@ class ResetPasswordController extends BaseController
         //         return $this->sendError(trans('passwords.token'), 422);
         // }
     }
-
 
     /**
      * Reset the given user's password.
@@ -136,7 +133,6 @@ class ResetPasswordController extends BaseController
 //        $this->guard()->login($user);
     }
 
-
     /**
      * Пользователь по указанным данным
      *
@@ -153,16 +149,15 @@ class ResetPasswordController extends BaseController
         })->first();
         $user->setEmailForResetPassword($credentials['email']);
 
-        if ($user && !$user instanceof CanResetPasswordContract) {
+        if ($user && ! $user instanceof CanResetPasswordContract) {
             throw new UnexpectedValueException('User must implement CanResetPassword interface.');
         }
 
         return $user;
     }
 
-
     /**
-     * Валидация нового пароля
+     * Валидация нового пароля.
      *
      * @param  array  $credentials
      * @return bool
@@ -183,19 +178,18 @@ class ResetPasswordController extends BaseController
         if (is_null($user = $this->getUser($credentials))) {
             return static::INVALID_USER;
         }
-        if (!$this->validateNewPassword($credentials)) {
+        if (! $this->validateNewPassword($credentials)) {
             return static::INVALID_PASSWORD;
         }
         // if (! $this->broker()->getRepository()->exists($user, $credentials['token'])) {
         //     return static::INVALID_TOKEN;
         // }
-        if (!$this->broker()->tokenExists($user, $credentials['token'])) {
+        if (! $this->broker()->tokenExists($user, $credentials['token'])) {
             return static::INVALID_TOKEN;
         }
 
         return $user;
     }
-
 
     /**
      * Get the password reset credentials from the request.

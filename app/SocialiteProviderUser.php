@@ -5,7 +5,7 @@ namespace App;
 class SocialiteProviderUser extends BaseModelPivot
 {
     /**
-     * Получить владельцев провайдера
+     * Получить владельцев провайдера.
      */
     // public function SocialiteProviders()
     // {

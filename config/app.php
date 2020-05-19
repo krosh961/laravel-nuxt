@@ -58,7 +58,6 @@ return [
     'url' => env('APP_URL', 'http://localhost:8000'),
     'client_url' => env('APP_CLIENT_URL', 'http://localhost:8000'),
 
-
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
@@ -156,10 +155,10 @@ return [
         /*
          * Package Service Providers...
          */
-         // Barryvdh\Debugbar\ServiceProvider::class,
-         \SocialiteProviders\Manager\ServiceProvider::class,
-         Barryvdh\Cors\ServiceProvider::class,
-         Intervention\Image\ImageServiceProvider::class,
+        // Barryvdh\Debugbar\ServiceProvider::class,
+        \SocialiteProviders\Manager\ServiceProvider::class,
+        Barryvdh\Cors\ServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -219,7 +218,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         // 'Debugbar' => Barryvdh\Debugbar\Facade::class,
-        'Image' => Intervention\Image\Facades\Image::class
+        'Image' => Intervention\Image\Facades\Image::class,
     ],
 
 ];

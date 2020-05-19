@@ -24,13 +24,12 @@ class SaveEmailRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|' . config('validation.email'),
+            'email' => 'required|'.config('validation.email'),
             'public' => 'required|boolean',
-            'label' => 'nullable|' . config('validation.emailLabel'),
-            'main' => 'required|boolean'
+            'label' => 'nullable|'.config('validation.emailLabel'),
+            'main' => 'required|boolean',
         ];
     }
-
 
     /**
      * Configure the validator instance.

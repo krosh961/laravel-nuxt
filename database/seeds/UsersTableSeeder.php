@@ -1,12 +1,12 @@
 <?php
 
-use Illuminate\Database\Seeder;
-use App\User;
 use App\Email;
-use App\UserPasswordHistroy;
 use App\Phone;
-use Carbon\Carbon;
 use App\Traits\Avatar;
+use App\User;
+use App\UserPasswordHistroy;
+use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class UsersTableSeeder extends Seeder
 {
@@ -34,7 +34,7 @@ class UsersTableSeeder extends Seeder
                 $u->saveEmail($email);
             }
 
-            $avatar = ($u->gender ? 'https://randomuser.me/api/portraits/men/' : 'https://randomuser.me/api/portraits/women/') . mt_rand(0, 99) . '.jpg';
+            $avatar = ($u->gender ? 'https://randomuser.me/api/portraits/men/' : 'https://randomuser.me/api/portraits/women/').mt_rand(0, 99).'.jpg';
             $this->setAvatar($u, $avatar);
 
             // история изменений пароля
@@ -51,13 +51,13 @@ class UsersTableSeeder extends Seeder
         });
 
         $adminNickname = 'Ilya-Zelenko';
-        if (!User::ofNickname($adminNickname)->first()) {
+        if (! User::ofNickname($adminNickname)->first()) {
             $this->makeAdmin($adminNickname);
         }
     }
 
-
-    public function makeAdmin($adminNickname) {
+    public function makeAdmin($adminNickname)
+    {
         $adminAvatarBasePath = public_path('avatars/forAdminSeed/');
         $admin = User::firstOrCreate([
             'nickname' => $adminNickname,
@@ -67,7 +67,7 @@ class UsersTableSeeder extends Seeder
             'gender' => true,
             'birthday' => Carbon::now()->subYears(18),
             'timezone' => 'Europe/Kiev',
-            'country' => 'UKR'
+            'country' => 'UKR',
             // 'avatar' => [
             //     "lg" => $adminAvatarBasePath . 'lg.jpg',
             //     "md" => $adminAvatarBasePath . 'md.jpg',
@@ -76,7 +76,7 @@ class UsersTableSeeder extends Seeder
             // ],
         ]);
 
-        $this->setAvatar($admin, $adminAvatarBasePath . 'lg.jpg');
+        $this->setAvatar($admin, $adminAvatarBasePath.'lg.jpg');
 
         $provider = App\SocialiteProvider::where('name', 'google')->first();
         $admin->socAccounts()->save($provider, [
@@ -84,7 +84,7 @@ class UsersTableSeeder extends Seeder
             'uid' => '114487984432110048809',
             'token' => 'ya29.GlzXBSv-hkz9oljIlewBTi-8TRnqmIhng6DtLkjSU18ZtQ8PUrunm8ceTYWDdOOxPF5UTchP90nk8dOSPrfa4ImTo1IFbfm_MptL4IT6MLcdLF2TNXeHAUFgKUoDlg',
             'expiresIn' => 3598,
-            'refreshToken' => null
+            'refreshToken' => null,
         ]);
 
         $emails = [
@@ -94,22 +94,22 @@ class UsersTableSeeder extends Seeder
                 'label' => null,
                 'public' => false,
                 'verified' => false,
-                'verification_token' => 'testToken'
+                'verification_token' => 'testToken',
             ],
             [
                 'email' => 'aimer@gmail.com',
                 'label' => 'Для вопросов',
                 'public' => true,
                 'verified' => false,
-                'verification_token' => 'testToken'
+                'verification_token' => 'testToken',
             ],
             [
                 'email' => 'ilya@gmail.com',
                 'label' => 'Для деловых предложений',
                 'public' => true,
                 'verified' => true,
-                'verification_token' => null
-            ]
+                'verification_token' => null,
+            ],
         ];
 
         foreach ($emails as $email) {
@@ -117,15 +117,13 @@ class UsersTableSeeder extends Seeder
             $admin->saveEmail($emailModel);
         }
 
-
         // история изменений пароля
         $passwordsHistory = factory(UserPasswordHistroy::class, mt_rand(1, 3))->make();
         $admin->passwordsHistory()->saveMany($passwordsHistory);
         // чтобы удобней тестить
         $admin->passwordsHistory()->save(new UserPasswordHistroy([
-            'password' => \Hash::make('secret1')
+            'password' => \Hash::make('secret1'),
         ]));
-
 
         // телефоны
         $phones = [
@@ -134,29 +132,29 @@ class UsersTableSeeder extends Seeder
                 'prefix' => '380',
                 'number' => '983267431',
                 'label' => 'Семейный',
-                'public' => false
+                'public' => false,
             ]),
             factory(Phone::class)->make([
                 'country' => 'UKR',
                 'prefix' => '380',
                 'number' => '960652658',
                 'label' => 'Для работы',
-                'public' => true
+                'public' => true,
             ]),
             factory(Phone::class)->make([
                 'country' => 'POL',
                 'prefix' => '48',
                 'number' => '460652658',
                 'label' => 'Польский',
-                'public' => false
+                'public' => false,
             ]),
             factory(Phone::class)->make([
                 'country' => 'POL',
                 'prefix' => '48',
                 'number' => '583267431',
                 'label' => 'Польский 2',
-                'public' => false
-            ])
+                'public' => false,
+            ]),
         ];
 
         foreach ($phones as $phone) {
@@ -164,7 +162,8 @@ class UsersTableSeeder extends Seeder
         }
     }
 
-    public function setAvatar($user, $url) {
+    public function setAvatar($user, $url)
+    {
         $img = \Image::make($url);
         $this->setUserAvatar($user, $img);
     }

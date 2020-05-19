@@ -1,30 +1,29 @@
 <?php
+
 namespace App\Http\Controllers\API\Profile;
 
+use App\Email;
 use App\Http\Controllers\API\BaseController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Events\PasswordReset;
-use App\Traits\EmailVerification;
-use App\Traits\Avatar;
-use App\Http\Requests\Profile\Current\SetPasswordRequest;
-use App\Http\Requests\Profile\Current\SetUserDataRequest;
+use App\Http\Requests\Profile\Current\SaveAvatarRequest;
 use App\Http\Requests\Profile\Current\SaveEmailRequest;
 use App\Http\Requests\Profile\Current\SavePhoneRequest;
-use App\Http\Requests\Profile\Current\SaveAvatarRequest;
-use Image;
-use File;
+use App\Http\Requests\Profile\Current\SetPasswordRequest;
+use App\Http\Requests\Profile\Current\SetUserDataRequest;
 use App\Http\Resources\UserResource;
-use App\Email;
 use App\Phone;
+use App\Traits\Avatar;
+use App\Traits\EmailVerification;
 use App\UserPasswordHistroy;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Image;
 
 class ProfileController extends BaseController
 {
     use EmailVerification, Avatar;
 
     /**
-     * Меняет пароль currentPassword newPassword
+     * Меняет пароль currentPassword newPassword.
      */
     public function setPassword(SetPasswordRequest $request)
     {
@@ -47,6 +46,7 @@ class ProfileController extends BaseController
         $passwordHistory->each(function ($item) use ($newPassword, &$oldSamePassword) {
             if (Hash::check($newPassword, $item->password)) {
                 $oldSamePassword = $item;
+
                 return false;
             }
         });
@@ -62,7 +62,7 @@ class ProfileController extends BaseController
             $user->save();
 
             $user->passwordsHistory()->save(new UserPasswordHistroy([
-                'password' => $hashedNewPassword
+                'password' => $hashedNewPassword,
             ]));
         } else {
             return $this->sendError('Не верный текущий пароль', 422);
@@ -72,7 +72,7 @@ class ProfileController extends BaseController
     }
 
     /**
-     * Меняет пароль
+     * Меняет пароль.
      */
     public function setUserData(SetUserDataRequest $request)
     {
@@ -94,9 +94,10 @@ class ProfileController extends BaseController
     }
 
     /** image
-     * Сохраняет аватарку
+     * Сохраняет аватарку.
      */
-    public function setAvatar(SaveAvatarRequest $request) {
+    public function setAvatar(SaveAvatarRequest $request)
+    {
         $user = auth()->user();
         $cropInfo = json_decode($request->cropInfo, true);
         $file = $request->file('file');
@@ -109,21 +110,21 @@ class ProfileController extends BaseController
         );
         $avatar = $this->setUserAvatar($user, $img);
 
-
         return new UserResource($user);
     }
 
     /**
-     * Сохраняет почту
+     * Сохраняет почту.
      */
-    public function saveEmail(SaveEmailRequest $request) {
+    public function saveEmail(SaveEmailRequest $request)
+    {
         $user = auth()->user();
         $data = $request->only(['email', 'label', 'public']);
 
         $email = new Email(array_merge($data, [
-            'verified' => false
+            'verified' => false,
         ]));
-        $email->verification_token =  $this->createVerificationTokenAndMail($email);
+        $email->verification_token = $this->createVerificationTokenAndMail($email);
 
         $user->saveEmail($email);
 
@@ -136,9 +137,10 @@ class ProfileController extends BaseController
     }
 
     /**
-     * Удаляет почту
+     * Удаляет почту.
      */
-    public function deleteEmail(Request $request) {
+    public function deleteEmail(Request $request)
+    {
         if (auth()->user()->main_email->id === $request->id) {
             return $this->sendError('Нельзя удалять главную почту', 422);
         }
@@ -149,9 +151,10 @@ class ProfileController extends BaseController
     }
 
     /**
-     * Ставит почту как главную
+     * Ставит почту как главную.
      */
-    public function setMainEmail(Request $request) {
+    public function setMainEmail(Request $request)
+    {
         $email = Email::find($request->id);
         $user = auth()->user();
         $user->main_email = $email;
@@ -161,9 +164,10 @@ class ProfileController extends BaseController
     }
 
     /**
-     * Ставит гланый телефон
+     * Ставит гланый телефон.
      */
-    public function setMainPhone(Request $request) {
+    public function setMainPhone(Request $request)
+    {
         $phone = Phone::find($request->id);
         $user = auth()->user();
         $user->main_phone = $phone;
@@ -173,9 +177,10 @@ class ProfileController extends BaseController
     }
 
     /**
-     * Ставит почту как главную
+     * Ставит почту как главную.
      */
-    public function changePublicEmail(Request $request) {
+    public function changePublicEmail(Request $request)
+    {
         $email = Email::find($request->id);
         $email->public = $request->public;
         $email->save();
@@ -183,25 +188,24 @@ class ProfileController extends BaseController
         return new UserResource(auth()->user());
     }
 
-
-
     /**
-     * История паролей
+     * История паролей.
      */
-    public function getPasswordsHistory() {
-        return $this->sendResponse( auth()->user()->passwordsHistory()->get() );
+    public function getPasswordsHistory()
+    {
+        return $this->sendResponse(auth()->user()->passwordsHistory()->get());
     }
 
-
     /**
-     * Сохраняет почту
+     * Сохраняет почту.
      */
-    public function savePhone(SavePhoneRequest $request) {
+    public function savePhone(SavePhoneRequest $request)
+    {
         $user = auth()->user();
         // $data = $request->only(['prefix', 'number', 'label', 'public']);
 
         $phone = new Phone(array_merge($request->all(), [
-            'verified' => false
+            'verified' => false,
         ]));
         $phone->sms_verification_code = 'sms token';
 
@@ -216,9 +220,10 @@ class ProfileController extends BaseController
     }
 
     /**
-     * Удаляет почту
+     * Удаляет почту.
      */
-    public function deletePhone(Request $request) {
+    public function deletePhone(Request $request)
+    {
         $user = auth()->user();
         $user->deletePhone($request->id);
 
@@ -226,14 +231,14 @@ class ProfileController extends BaseController
     }
 
     /**
-     * Ставит почту как главную
+     * Ставит почту как главную.
      */
-    public function changePublicPhone(Request $request) {
+    public function changePublicPhone(Request $request)
+    {
         $phone = Phone::find($request->id);
         $phone->public = $request->public;
         $phone->save();
 
         return new UserResource(auth()->user());
     }
-
 }

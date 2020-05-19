@@ -25,9 +25,9 @@ class ForgotPasswordResetRequest extends FormRequest
     {
         return [
             'token' => config('validation.reset_password_token'),
-            'email' => 'required|' . config('validation.email'),
-            'password' => config('validation.password')
-//            'password_confirmation' => 'required|string|min:6|same:password'
+            'email' => 'required|'.config('validation.email'),
+            'password' => config('validation.password'),
+            //            'password_confirmation' => 'required|string|min:6|same:password'
         ];
     }
 }

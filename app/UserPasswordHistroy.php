@@ -6,17 +6,16 @@ class UserPasswordHistroy extends BaseModel
 {
     protected $table = 'users_passwords_history';
 
-
     protected $fillable = [
-        'password'
+        'password',
     ];
 
     protected $hidden = [
-        'password'
+        'password',
     ];
 
-
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 }

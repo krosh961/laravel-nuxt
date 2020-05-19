@@ -3,7 +3,7 @@
 Route::post('check-nickname', function () {
     $user = \App\User::where('nickname', request()->nickname)->first();
 
-    return response()->json(['unique' => !$user]);
+    return response()->json(['unique' => ! $user]);
 });
 
 Route::post('users', function () {
@@ -20,21 +20,18 @@ Route::post('users', function () {
     return \App\Http\Resources\UserResource::collection($users);
 });
 
-
 Route::get('socialite-providers', function () {
     $data = \App\SocialiteProvider::all();
 
     return $data; //response()->json($data);
 });
 
-
-
 // список стран ['US' => 'United States', 'BE' => 'Belgium', ...]
 Route::get('countries', function () {
     // $countries = Countries::all();     where('name.common', 'France');
 
     $countries = Countries::all()->filter(function ($item) {
-        return $item->cca2 !== "EU" && isset($item['translations']['rus']['common']); // strlen($item->cca2) > 0;
+        return $item->cca2 !== 'EU' && isset($item['translations']['rus']['common']); // strlen($item->cca2) > 0;
     })->map(function ($item, $key) {
         $prefix = isset($item['dialling']['calling_code'][0]) ? $item['dialling']['calling_code'][0] : null;
         // $prefix = $prefix[0] ?? null;
@@ -47,7 +44,7 @@ Route::get('countries', function () {
             'text' => $item['translations']['rus']['common'], // country()->name($shortName), // $item->name->common,
             // 'code' => $shortName, // postal,
             'flagName' => $key,
-            'phonePrefix' => $prefix     // $prefix, // , // isset($item->dialling) ?  : null  ['calling_code'][0]
+            'phonePrefix' => $prefix,     // $prefix, // , // isset($item->dialling) ?  : null  ['calling_code'][0]
             // 'flag' => $item['flag'],
             // 'tttttttttttttttttttttttttttttttttttttttttt' => $item->hydrate('timezones')->timezones->first() // ->zone_name
             // 'r' => $item->getTranslation()
@@ -59,7 +56,6 @@ Route::get('countries', function () {
     // $timezones = Countries::all()->where('name.common', 'United States')->first()->hydrate('timezones')->timezones->first(); // ->zone_name
     // $countries->toJson()
     return response()->json($countries->values()); // ->pluck('name.common')
-
 
     // $countries = country()->all();
     //
@@ -73,14 +69,13 @@ Route::get('countries', function () {
     // return response()->json($countries);
 });
 
-
 // список временный зон в формате [Africa/Abidjan] => (UTC+00:00) Africa/Abidjan
 Route::get('timezones', function () {
     $countries = Countries::all();
 
     $timezones = collect([]);
     $countries->hydrate('timezones')->each(function ($country, $countryKey) use ($timezones) {
-        $timezones = $country['timezones']->each(function($timezone) use ($timezones, $country, $countryKey) {
+        $timezones = $country['timezones']->each(function ($timezone) use ($timezones, $country, $countryKey) {
             $name = $timezone['zone_name'];
             $timezones[] = [
                 'text' => $name,
@@ -88,12 +83,11 @@ Route::get('timezones', function () {
                 'countryName' => $country['translations']['rus']['common'],
                 // 'countryCodeFlag' => $countryKey,
                 'flagName' => $timezone->cca3,
-                'countryCode' => $timezone->cca3 // cca2
+                'countryCode' => $timezone->cca3, // cca2
             ];
         });
     });
     $tzlist = $timezones->unique('text');
-
 
     $result = [];
     foreach ($tzlist as $timezone) {
@@ -105,34 +99,32 @@ Route::get('timezones', function () {
         $result[] = array_merge($timezone, [
             // 'value' => $timezone['value'],
             'offset' => "$offsetPrefix$offsetFormatted",
-            'offsetPrefix' => $offsetPrefix
+            'offsetPrefix' => $offsetPrefix,
             // "text" => "($utcOffset) $timezone"
         ]);
     }
 
-    usort($result, function ($a, $b) { return strcmp($a["offset"], $b["offset"]); });
-
+    usort($result, function ($a, $b) {
+        return strcmp($a['offset'], $b['offset']);
+    });
 
     return response()->json($result);
 });
-
-
 
 // список временный зон в формате [Africa/Abidjan] => (UTC+00:00) Africa/Abidjan
 Route::get('phone-prefixes', function () {
     $countries = Countries::all()->filter(function ($item) {
         $prefix = isset($item['dialling']['calling_code'][0]);
 
-        return $prefix && $item->cca2 !== "EU" && isset($item['translations']['rus']['common']); // strlen($item->cca2) > 0;
+        return $prefix && $item->cca2 !== 'EU' && isset($item['translations']['rus']['common']); // strlen($item->cca2) > 0;
     })->map(function ($item, $key) {
         return [
             'countryCode' => $item->cca3, // или key
             'countryCode2' => $item->cca2,
             'country' => $item['translations']['rus']['common'],
-            'phonePrefix' => $item['dialling']['calling_code'][0]
+            'phonePrefix' => $item['dialling']['calling_code'][0],
         ];
     });
-
 
     return response()->json($countries->values());
 });

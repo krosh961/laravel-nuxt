@@ -18,12 +18,10 @@ use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Exception\UniqueTokenIdentifierConstraintViolationException;
 use League\OAuth2\Server\ResponseTypes\BearerTokenResponse;
 
-# https://github.com/laravel/passport/issues/71
+// https://github.com/laravel/passport/issues/71
 
 /**
- * Trait PassportToken
- *
- * @package App\Traits
+ * Trait PassportToken.
  */
 trait PassportToken
 {

@@ -1,33 +1,34 @@
 <?php
+
 namespace App\Http\Controllers\API\Auth;
 
-use App\Http\Controllers\API\BaseController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-// use Carbon\Carbon;
-use App\User;
-use App\SocialiteProvider;
 use App\Email;
-use App\Http\Requests\Auth\SignupRequest;
+use App\Http\Controllers\API\BaseController;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Traits\PassportToken;
-use Illuminate\Foundation\Auth\ThrottlesLogins;
+// use Carbon\Carbon;
+use App\Http\Requests\Auth\SignupRequest;
 use App\Http\Resources\UserResource;
-use App\Traits\Socialite;
+use App\SocialiteProvider;
 use App\Traits\EmailVerification;
+use App\Traits\PassportToken;
+use App\Traits\Socialite;
+use App\User;
 use GuzzleHttp\Client;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Foundation\Auth\ThrottlesLogins;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 // use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends BaseController
 {
     use PassportToken, ThrottlesLogins, Socialite, EmailVerification; //
+
     /**
-     * Регистрация
+     * Регистрация.
      */
     public function signup(SignupRequest $request)
     {
@@ -49,20 +50,19 @@ class AuthController extends BaseController
             'password' => $request->form['password'] ? bcrypt($request->form['password']) : null,
             'created_through_soc_acc' => $socAcc ? $socAcc->id : null,
             'timezone' => $timezoneCookie ?? config('app.timezone'), // json_decode(get_file_contents('http://ip-api.com/json/'), true)['timezone']
-            'country' => $country
+            'country' => $country,
         ]);
-
-
 
         event(new Registered($user));
 
         // если регестраци не через соц акк
-        if (!$userSoc) {
+        if (! $userSoc) {
             $captchaResponse = $request->captchaResponse;
             $captchaCheckStatus = $this->checkCaptcha($captchaResponse);
 
-            if (!$captchaCheckStatus) {
+            if (! $captchaCheckStatus) {
                 $user->delete();
+
                 return $this->sendError('Неправильно введена капча.', 422);
             }
 
@@ -84,18 +84,17 @@ class AuthController extends BaseController
 
         // если регестрация через соц акк, то сохраняет акк и отправляет ответ для входа(токены и объект пользователя)
         if ($userSoc) {
-            $this->userSaveSocAcc($user, $userSoc,  $request->providerName);
+            $this->userSaveSocAcc($user, $userSoc, $request->providerName);
             $doAuthResponse = $this->getDoAuthResponse($user, $request->providerName);
 
             return $this->sendResponse($doAuthResponse);
         }
 
-
-        return $this->sendResponse(NULL, 'Пользователь успешно создан!', 201);
+        return $this->sendResponse(null, 'Пользователь успешно создан!', 201);
     }
 
     /**
-     * Вход и возвращение токена
+     * Вход и возвращение токена.
      *
      * @param  [string] email
      * @param  [string] password
@@ -124,18 +123,18 @@ class AuthController extends BaseController
         || (isset($credentials['nickname']) && $user = User::ofNickname($credentials['nickname'])->first())
         ) {
             // совпадает ли пароль
-            if (request()->password && !Hash::check(request()->password, $user->password)) {
+            if (request()->password && ! Hash::check(request()->password, $user->password)) {
                 $error = 'Не правильный пароль';
             }
         } else {
             $error = isset($credentials['email']) ? 'Не правильная почта.' : 'Не правильный ник.';
         }
 
-
         // если найдена ошибка
         if ($error) {
             // попыток входа += 1
             $this->incrementLoginAttempts($request);
+
             return $this->sendError($error, 401);
         }
 
@@ -146,7 +145,6 @@ class AuthController extends BaseController
         $this->clearLoginAttempts($request);
         event(new Login($user, false)); // false - это remember
 
-
         // Возврашает ответ с токеном
         return $this->getBearerTokenByUser($user);
         // "token_type": "Bearer",
@@ -156,7 +154,7 @@ class AuthController extends BaseController
     }
 
     /**
-     * Logout user (Revoke the token)
+     * Logout user (Revoke the token).
      *
      * @return [string] message
      */
@@ -167,11 +165,11 @@ class AuthController extends BaseController
         $user->token()->revoke();
         event(new Logout($user));
 
-        return $this->sendResponse(NULL, 'Выход успешен');
+        return $this->sendResponse(null, 'Выход успешен');
     }
 
     /**
-     * Get the authenticated User
+     * Get the authenticated User.
      *
      * @return [json] user object
      */
@@ -180,13 +178,12 @@ class AuthController extends BaseController
         $user = new UserResource(auth()->user());
 
         return $this->sendResponse([
-            'user' => $user
+            'user' => $user,
         ]);
     }
 
     /**
-     * Повторно отправить сообщение о подтвержденнии, не меняя при этом токен
-     *
+     * Повторно отправить сообщение о подтвержденнии, не меняя при этом токен.
      */
     public function repeatVerificationMail()
     {
@@ -194,7 +191,7 @@ class AuthController extends BaseController
     }
 
     /**
-     * Попытка подтвердить почту пользователя
+     * Попытка подтвердить почту пользователя.
      *
      * @return [json] user object
      */
@@ -212,7 +209,7 @@ class AuthController extends BaseController
     }
 
     /**
-     * Only dev: Вернуть данные для входа указаного пользователя
+     * Only dev: Вернуть данные для входа указаного пользователя.
      */
     public function devAuthInfoByUser()
     {
@@ -236,24 +233,23 @@ class AuthController extends BaseController
     }
 
     /**
-     * Результат капчи
+     * Результат капчи.
      */
-    protected function checkCaptcha($captchaResponse) : bool
+    protected function checkCaptcha($captchaResponse): bool
     {
         $client = new Client();
         $resStr = $client->post('https://www.google.com/recaptcha/api/siteverify', ['query' => [
             'secret' => env('RECAPTCHA_SECRET'), // TODO
-            'response' => $captchaResponse
+            'response' => $captchaResponse,
         ]])->getBody()->getContents();
 
         $resObj = json_decode($resStr);
 
-        return (boolean) $resObj->success;
+        return (bool) $resObj->success;
     }
 
-
     /**
-     * username использующийся в Throttles
+     * username использующийся в Throttles.
      *
      * @return string
      */
